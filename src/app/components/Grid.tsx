@@ -66,7 +66,6 @@ export default function Grid() {
   const playerRef = useRef(player)
   useEffect(() => { playerRef.current = player }, [player])
   const [metalCount, setMetalCount] = useState(0)
-  const [monsterPositions, setMonsterPositions] = useState<{ x: number, y: number }[]>([])
   const [caught, setCaught] = useState(false)
   const [win, setWin] = useState(false)
   const [startTime, setStartTime] = useState(Date.now())
@@ -91,8 +90,8 @@ export default function Grid() {
     if (caught || win) return;
     const interval = setInterval(() => {
       setGrid(prevGrid => {
-        let newGrid = prevGrid.map(row => row.slice())
-        let newMonsterPositions: { x: number, y: number }[] = []
+        const newGrid = prevGrid.map(row => row.slice())
+        const newMonsterPositions: { x: number, y: number }[] = []
         let playerCaught = false
         const player = playerRef.current;
         for (let y = 0; y < GRID; y++) {
@@ -145,7 +144,6 @@ export default function Grid() {
           }
         }
         if (playerCaught) setCaught(true)
-        setMonsterPositions(newMonsterPositions)
         return newGrid
       })
     }, 1000)
@@ -162,7 +160,6 @@ export default function Grid() {
         }
       }
     }
-    setMonsterPositions(positions)
   }, [grid])
 
   const handleMove = useCallback(
@@ -225,7 +222,7 @@ export default function Grid() {
         setPendingScore({ time: timeUsed, date: new Date().toLocaleString() })
       }
     },
-    [player, grid, metalCount, highscores, startTime]
+    [player, grid, metalCount, startTime]
   )
 
   /* tastestyring */
@@ -307,7 +304,7 @@ export default function Grid() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [win, caught, pendingScore, nameInput]);
+  }, [win, caught, pendingScore, nameInput, resetGame, submitHighscore])
 
   return (
     <>
